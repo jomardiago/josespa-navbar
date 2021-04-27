@@ -1,5 +1,5 @@
 import React from "react";
-import { testLogin } from '@josespa/state-util';
+import { auth$ as auth, logout } from '@josespa/state-util';
 import { navigateToUrl } from "single-spa";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -8,16 +8,21 @@ import Button from "react-bootstrap/Button";
 
 export default function Root(props) {
   const [authenticated, setAuthenticated] = React.useState(false);
+
   React.useEffect(() => {
-    if (!authenticated) {
-      navigateToUrl('/auth');
-    } else {
-      navigateToUrl('/employees');
-    }
-    setTimeout(() => {
-      setAuthenticated(testLogin);
-    }, 2000);
-  }, [authenticated]);
+    const sub = auth.subscribe(({ sessionToken }) => {
+      const needsLogin = !sessionToken;
+      if (needsLogin) {
+        navigateToUrl('/auth') 
+      } else if (!needsLogin && window.location.pathname === '/auth') {
+        navigateToUrl('/employees');
+      }
+    });
+
+    return () => {
+      sub.unsubscribe();
+    };
+  }, []);
 
   function navigate(e, route) {
     e.preventDefault();
