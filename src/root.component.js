@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 export default function Root(props) {
+  console.log('inside navbar: ', props);
   function navigate(e, route) {
     e.preventDefault();
     navigateToUrl(route);
