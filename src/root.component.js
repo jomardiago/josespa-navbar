@@ -6,7 +6,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 export default function Root(props) {
-  console.log('inside navbar: ', props);
+  const [authenticated, setAuthenticated] = React.useState(false);
+  React.useEffect(() => {
+    // check if user exists...
+    if (!authenticated) navigateToUrl('/auth');
+  }, []);
+
   function navigate(e, route) {
     e.preventDefault();
     navigateToUrl(route);
@@ -25,9 +30,11 @@ export default function Root(props) {
             Departments
           </Nav.Link>
         </Nav>
-        <Form inline>
-          <Button variant="outline-success">Login</Button>
-        </Form>
+        {authenticated && (
+          <Form inline>
+            <Button variant="outline-success">Logout</Button>
+          </Form>
+        )}
       </Navbar.Collapse>
     </Navbar>
   );
